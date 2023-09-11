@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react"
 import "./App.css"
 
-/* eslint-disable no-eval */
-let statuses: {
+const PROXY_SERVER = "https://shcors.uwu.network"
+const STATUSES_REFRESH_INTERVAL = 60
+
+type Statuses = {
 	[key: number]: {
 		code: number
 		message: string
 	}
-} = eval(
-	await (
-		await fetch(
-			"https://raw.githubusercontent.com/httpcats/http.cat/master/lib/statuses.js"
-		)
-	).text()
-)
-/* eslint-enable no-eval */
+}
 
-const PROXY_SERVER = "https://shcors.uwu.network"
+let statuses: Statuses = await get_statuses()
+
+setInterval(() => {
+	get_statuses()
+		.then((result) => (statuses = result))
+		.catch(console.error)
+}, STATUSES_REFRESH_INTERVAL * 1000)
 
 /**
  * A custom `fetch` function to access webpages through a CORS proxy
@@ -40,6 +41,17 @@ function cors_fetch(input: string, init?: RequestInit): Promise<Response> {
 			})
 			.catch(reject)
 	})
+}
+
+async function get_statuses(): Promise<Statuses> {
+	// eslint-disable-next-line no-eval
+	return eval(
+		await (
+			await fetch(
+				"https://raw.githubusercontent.com/httpcats/http.cat/master/lib/statuses.js"
+			)
+		).text()
+	)
 }
 
 function isValidHttpCode(status_code: number): boolean {
