@@ -59,7 +59,6 @@ function isValidHttpCode(status_code: number): boolean {
 }
 
 function App() {
-	console.log(statuses)
 	const [statusCode, setStatusCode] = useState<number>()
 	const [statusValid, setStatusValid] = useState<boolean>()
 
