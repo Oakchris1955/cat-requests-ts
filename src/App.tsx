@@ -71,7 +71,7 @@ function App() {
 	}, [statusCode])
 
 	return (
-		<main>
+		<main id="container">
 			{statusValid !== undefined && statusCode !== undefined && (
 				<>
 					{statusValid
