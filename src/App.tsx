@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import "./App.css"
 
+import isUrl from "validator/lib/isURL"
+
 const PROXY_SERVER = "https://shcors.uwu.network"
 const STATUSES_REFRESH_INTERVAL = 60
 
@@ -74,9 +76,14 @@ function App() {
 		<main id="container">
 			{statusValid !== undefined && statusCode !== undefined && (
 				<>
-					{statusValid
-						? `Status code "${statusCode}" is valid`
-						: "Invalid status code detected"}
+					{statusValid ? (
+						<img
+							src={`https://http.cat/${statusCode}`}
+							alt={`Status code "${statusCode}" is valid`}
+						/>
+					) : (
+						"Invalid status code detected"
+					)}
 					<br />
 				</>
 			)}
@@ -84,11 +91,15 @@ function App() {
 			<button
 				onClick={() => {
 					if (typeof inputURL !== "undefined")
-						cors_fetch(inputURL)
-							.then((response) => {
-								setStatusCode(response.status)
-							})
-							.catch(console.error)
+						if (isUrl(inputURL, { require_protocol: true })) {
+							cors_fetch(inputURL)
+								.then((response) => {
+									setStatusCode(response.status)
+								})
+								.catch(console.error)
+						} else {
+							alert("Invalid URL inputted")
+						}
 				}}>
 				Submit URL
 			</button>
