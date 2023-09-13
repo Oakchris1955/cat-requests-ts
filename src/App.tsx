@@ -5,6 +5,7 @@ import isUrl from "validator/lib/isURL"
 
 const PROXY_SERVER = "https://shcors.uwu.network"
 const STATUSES_REFRESH_INTERVAL = 60
+const DEFAULT_TIMEOUT = 5
 
 type Statuses = {
 	[key: number]: {
@@ -21,6 +22,19 @@ setInterval(() => {
 		.catch(console.error)
 }, STATUSES_REFRESH_INTERVAL * 1000)
 
+async function timeout_fetch(
+	input: string,
+	init?: RequestInit & { timeout?: number }
+): Promise<Response> {
+	let timeout = init?.timeout || DEFAULT_TIMEOUT
+	init?.timeout !== undefined && delete init.timeout
+
+	return await fetch(input, {
+		...init,
+		signal: AbortSignal.timeout(timeout * 1000),
+	})
+}
+
 /**
  * A custom `fetch` function to access webpages through a CORS proxy
  * @param {string} input The URL to fetch
@@ -28,7 +42,7 @@ setInterval(() => {
  */
 function cors_fetch(input: string, init?: RequestInit): Promise<Response> {
 	return new Promise((resolve, reject) => {
-		fetch(`${PROXY_SERVER}/${input}`, { ...init, mode: "cors" })
+		timeout_fetch(`${PROXY_SERVER}/${input}`, { ...init, mode: "cors" })
 			.then(async (response) => {
 				// Check whether or not the domain accessed exists
 				if (
@@ -49,7 +63,7 @@ async function get_statuses(): Promise<Statuses> {
 	// eslint-disable-next-line no-eval
 	return eval(
 		await (
-			await fetch(
+			await timeout_fetch(
 				"https://raw.githubusercontent.com/httpcats/http.cat/master/lib/statuses.js"
 			)
 		).text()
