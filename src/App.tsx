@@ -78,7 +78,7 @@ function App() {
 	const [statusCode, setStatusCode] = useState<number>()
 	const [statusValid, setStatusValid] = useState<boolean>()
 
-	const [inputURL, setInputURL] = useState<string>()
+	const [inputURL, setInputURL] = useState<string>("")
 
 	useEffect(() => {
 		if (statusCode !== undefined) {
@@ -101,11 +101,18 @@ function App() {
 					<br />
 				</>
 			)}
-			<input value={inputURL} onChange={(e) => setInputURL(e.target.value)} />
-			<button
-				onClick={() => {
+			<form
+				name="mainForm"
+				autoComplete="false"
+				onSubmit={(e) => {
+					// Prevent URL redirection after form submission
+					e.preventDefault()
+
 					if (typeof inputURL !== "undefined")
 						if (isUrl(inputURL, { require_protocol: true })) {
+							// This URL validity check might seem redundant.
+							// However, the browser URL validation might fail in some cases (http://.com for example),
+							// so it is best to keep this check in here just in case
 							cors_fetch(inputURL)
 								.then((response) => {
 									setStatusCode(response.status)
@@ -115,8 +122,16 @@ function App() {
 							alert("Invalid URL inputted")
 						}
 				}}>
-				Submit URL
-			</button>
+				<input
+					name="inputUrl"
+					type="url"
+					required
+					placeholder="https://example.com"
+					value={inputURL}
+					onChange={(e) => setInputURL(e.target.value)}
+				/>
+				<input name="submitButton" type="submit" value="Submit URL" />
+			</form>
 		</main>
 	)
 }
