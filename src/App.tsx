@@ -4,6 +4,7 @@ import "./App.css"
 import isUrl from "validator/lib/isURL"
 
 const PROXY_SERVER = "https://shcors.uwu.network"
+const PLACEHOLDER_URL = "https://example.com"
 const STATUSES_REFRESH_INTERVAL = 60
 const DEFAULT_TIMEOUT = 5
 
@@ -109,27 +110,27 @@ function App() {
 					// Prevent URL redirection after form submission
 					e.preventDefault()
 
-					if (typeof inputURL !== "undefined")
-						if (isUrl(inputURL, { require_protocol: true })) {
-							// This URL validity check might seem redundant.
-							// However, the browser URL validation might fail in some cases (http://.com for example),
-							// so it is best to keep this check in here just in case
-							cors_fetch(inputURL)
-								.then((response) => {
-									setStatusCode(response.status)
-								})
-								.catch(console.error)
-						} else {
-							alert("Invalid URL inputted")
-						}
+					let localInputURL = inputURL || PLACEHOLDER_URL
+
+					if (isUrl(localInputURL, { require_protocol: true })) {
+						// This URL validity check might seem redundant.
+						// However, the browser URL validation might fail in some cases (http://.com for example),
+						// so it is best to keep this check in here just in case
+						cors_fetch(localInputURL)
+							.then((response) => {
+								setStatusCode(response.status)
+							})
+							.catch(console.error)
+					} else {
+						alert("Invalid URL inputted")
+					}
 				}}>
 				<input
 					name="inputUrl"
 					id="inputUrl"
 					type="url"
-					required
 					autoComplete="off"
-					placeholder="https://example.com"
+					placeholder={PLACEHOLDER_URL}
 					value={inputURL}
 					onChange={(e) => setInputURL(e.target.value)}
 				/>
