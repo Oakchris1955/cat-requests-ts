@@ -29,6 +29,7 @@
     "eject": "react-scripts eject",
     "format": "prettier src/App.tsx --write"
   },
+  "homepage": "https://oakchris1955.github.io/cat-requests",
   "eslintConfig": {
     "extends": [
       "react-app",
