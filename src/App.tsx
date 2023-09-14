@@ -103,6 +103,7 @@ function App() {
 			)}
 			<form
 				name="mainForm"
+				id="mainForm"
 				autoComplete="false"
 				onSubmit={(e) => {
 					// Prevent URL redirection after form submission
@@ -124,13 +125,20 @@ function App() {
 				}}>
 				<input
 					name="inputUrl"
+					id="inputUrl"
 					type="url"
 					required
+					autoComplete="off"
 					placeholder="https://example.com"
 					value={inputURL}
 					onChange={(e) => setInputURL(e.target.value)}
 				/>
-				<input name="submitButton" type="submit" value="Submit URL" />
+				<input
+					name="submitButton"
+					id="submitButton"
+					type="submit"
+					value="Submit URL"
+				/>
 			</form>
 		</main>
 	)
