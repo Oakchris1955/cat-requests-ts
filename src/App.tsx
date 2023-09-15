@@ -8,18 +8,11 @@ const PLACEHOLDER_URL = "https://example.com"
 const STATUSES_REFRESH_INTERVAL = 60
 const DEFAULT_TIMEOUT = 5
 
-type Statuses = {
-	[key: number]: {
-		code: number
-		message: string
-	}
-}
-
-let statuses: Statuses = await get_statuses()
+let status_404: ArrayBuffer = await get_404()
 
 setInterval(() => {
-	get_statuses()
-		.then((result) => (statuses = result))
+	get_404()
+		.then((result) => (status_404 = result))
 		.catch(console.error)
 }, STATUSES_REFRESH_INTERVAL * 1000)
 
@@ -60,19 +53,17 @@ function cors_fetch(input: string, init?: RequestInit): Promise<Response> {
 	})
 }
 
-async function get_statuses(): Promise<Statuses> {
+async function get_404(): Promise<ArrayBuffer> {
 	// eslint-disable-next-line no-eval
-	return eval(
-		await (
-			await timeout_fetch(
-				"https://raw.githubusercontent.com/httpcats/http.cat/master/lib/statuses.js"
-			)
-		).text()
-	)
+	return await (await cors_fetch("https://http.cat/404")).arrayBuffer()
 }
 
-function isValidHttpCode(status_code: number): boolean {
-	return status_code in statuses
+async function isValidHttpCode(status_code: number): Promise<boolean> {
+	return (
+		(await (
+			await cors_fetch(`https://http.cat/${status_code}`)
+		).arrayBuffer()) !== status_404
+	)
 }
 
 function App() {
@@ -83,7 +74,7 @@ function App() {
 
 	useEffect(() => {
 		if (statusCode !== undefined) {
-			setStatusValid(isValidHttpCode(statusCode))
+			isValidHttpCode(statusCode).then(setStatusValid).catch(console.error)
 		}
 	}, [statusCode])
 
