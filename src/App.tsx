@@ -132,6 +132,16 @@ function App() {
 					value="Submit URL"
 				/>
 			</form>
+
+			<footer>
+				<p>
+					Cat Image API:
+					<a href="https://http.cat/" target="_blank" rel="noreferrer">
+						http.cat
+					</a>
+				</p>
+				<p>&copy; 2023 Oakchris1955</p>
+			</footer>
 		</main>
 	)
 }
