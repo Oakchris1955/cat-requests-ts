@@ -30,6 +30,10 @@
     margin: 0.5vh 0.5vw;
 }
 
+img {
+    max-width: 90vw;
+}
+
 #mainForm {
     width: 100%;
     height: 100%;

@@ -135,7 +135,7 @@ function App() {
 
 			<footer>
 				<p>
-					Cat Image API:
+					Cat Image API:&nbsp;
 					<a href="https://http.cat/" target="_blank" rel="noreferrer">
 						http.cat
 					</a>
